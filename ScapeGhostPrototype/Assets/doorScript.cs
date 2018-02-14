@@ -6,11 +6,15 @@ public class doorScript : MonoBehaviour {
 
     public GameObject holder;
     public GameObject gate;
+    private Collider detector;
+    public bool locked = true;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        locked = true;
+        detector = GetComponent<BoxCollider>();
+        detector.enabled = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -18,11 +22,35 @@ public class doorScript : MonoBehaviour {
 
     }
 
+    public bool interact(NPCroutine npc)
+    {
+        if (npc.ownKey)
+        {
+            if (locked)
+            {
+                detector.enabled = true;
+                locked = false;
+            }
+            else
+            {
+                gate.transform.position = gameObject.transform.position;
+                detector.enabled = false;
+                locked = true;
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals("NPC"))
         {
-            if (other.gameObject.GetComponent<NPCroutine>().ownKey)
+            if (!locked)
             {
                 gate.transform.position = holder.transform.position;
             }
@@ -34,7 +62,7 @@ public class doorScript : MonoBehaviour {
     {
         if (other.gameObject.tag.Equals("NPC"))
         {
-            if (other.gameObject.GetComponent<NPCroutine>().ownKey)
+            if (!locked)
             {
                 gate.transform.position = gameObject.transform.position;
             }

@@ -11,10 +11,14 @@ public class NPCgaurd1script : MonoBehaviour {
     public GameObject l4;
     public GameObject l5;
     public GameObject l6;
+    public GameObject l7;
     public GameObject mat1;
     private NPCroutine npc;
     public GameObject crazyPrisoner;
     public GameObject gaurd2;
+    public doorScript bottomDoor;
+    public doorScript topDoor;
+    public doorScript cellDoor;
     bool stdWalk = true;
     private bool atL1 = false;
     bool hitCrazy = false;
@@ -73,6 +77,10 @@ public class NPCgaurd1script : MonoBehaviour {
         //    yield return new WaitForSeconds(0.1f);
         //    npc.setTargetLoc(new Vector2(crazyPrisoner.gameObject.transform.position.x, crazyPrisoner.gameObject.transform.position.z));
         //}
+        yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
+        bottomDoor.interact(npc);
+        yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        bottomDoor.interact(npc);
         yield return StartCoroutine(myRoutine.goToLocator(crazyPrisoner, npc));
 
         hitCrazy = false;
@@ -83,20 +91,27 @@ public class NPCgaurd1script : MonoBehaviour {
         yield return new WaitForSeconds(1.0f);
 
         print("RETURNING...");
+        yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        bottomDoor.interact(npc);
+        yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
+        bottomDoor.interact(npc);
+        // yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
 
-       // yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
 
-       // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
+        // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
 
-       // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
-
-       // yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
+        // yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
+        yield return StartCoroutine(myRoutine.goToLocator(l7, npc));
+        cellDoor.interact(npc);
 
         yield return StartCoroutine(myRoutine.goToLocator(l3, npc));
 
         crazyPrisoner.GetComponent<NPCroutine>().setTargetLoc(new Vector2(crazyPrisoner.transform.position.x, crazyPrisoner.transform.position.z));
         crazyPrisoner.GetComponent<NPCroutine>().uncuff();
         //yield return new WaitForSeconds(0.5f);
+        yield return StartCoroutine(myRoutine.goToLocator(l7, npc));
+        cellDoor.interact(npc);
 
         yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
 
