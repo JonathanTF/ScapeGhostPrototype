@@ -283,15 +283,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\CellScript.cs" />
+    <Compile Include="Assets\colliderIsTouching.cs" />
     <Compile Include="Assets\crazyScript.cs" />
     <Compile Include="Assets\doorScript.cs" />
+    <Compile Include="Assets\doorScriptGaurd3.cs" />
+    <Compile Include="Assets\finalRunnerScript.cs" />
     <Compile Include="Assets\Inhabit.cs" />
     <Compile Include="Assets\keyMatScript.cs" />
     <Compile Include="Assets\keyScript.cs" />
     <Compile Include="Assets\movement.cs" />
     <Compile Include="Assets\NPCgaurd1script.cs" />
     <Compile Include="Assets\NPCgaurd2script.cs" />
+    <Compile Include="Assets\NPCgaurd3script.cs" />
     <Compile Include="Assets\NPCroutine.cs" />
+    <Compile Include="Assets\penTracker.cs" />
     <Compile Include="Assets\walkingNPC1script.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

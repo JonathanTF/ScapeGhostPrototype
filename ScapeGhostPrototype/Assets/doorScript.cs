@@ -8,6 +8,7 @@ public class doorScript : MonoBehaviour {
     public GameObject gate;
     private Collider detector;
     public bool locked = true;
+    public bool disableInteract = false;
 
 	// Use this for initialization
 	void Start () {
@@ -24,6 +25,11 @@ public class doorScript : MonoBehaviour {
 
     public bool interact(NPCroutine npc)
     {
+        if (disableInteract)
+        {
+            return false;
+        }
+
         if (npc.ownKey)
         {
             if (locked)
@@ -54,7 +60,7 @@ public class doorScript : MonoBehaviour {
             {
                 gate.transform.position = holder.transform.position;
             }
-            print("removing gate");
+            //print("removing gate");
         }
     }
 
@@ -66,7 +72,7 @@ public class doorScript : MonoBehaviour {
             {
                 gate.transform.position = gameObject.transform.position;
             }
-            print("bringing back gate");
+            //print("bringing back gate");
         }  
     }
 

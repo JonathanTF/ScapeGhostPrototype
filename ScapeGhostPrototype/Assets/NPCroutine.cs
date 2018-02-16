@@ -19,9 +19,15 @@ public class NPCroutine : MonoBehaviour {
     private bool waitDelay = false;
     public bool skipUpdate = false;
     public Vector3 start_loc;
+    public Material standardMaterial;
+    public Material ghostMaterial;
+    private MeshRenderer render;
+    public bool fighting = false;
 
     // Use this for initialization
     void Start () {
+        render = GetComponent<MeshRenderer>();
+        changeTostandardMat();
         mover = gameObject.GetComponent<CharacterController>();
         StartCoroutine(resist());
         start_loc = transform.position;
@@ -37,6 +43,13 @@ public class NPCroutine : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void freeze()
+    {
+        StopAllCoroutines();
+    }
+
+
 
     public Vector2 getTarget()
     {
@@ -124,9 +137,10 @@ public class NPCroutine : MonoBehaviour {
 
     public void fight()
     {
-        skipUpdate = true;
+        fighting = true;
+        //skipUpdate = true;
         allowControl = false;
-        StartCoroutine(fightTimer());
+        //StartCoroutine(fightTimer());
     }
 
     public void skipAllUpdate()
@@ -136,16 +150,26 @@ public class NPCroutine : MonoBehaviour {
 
     public void stopFight()
     {
-       if(gameObject.GetComponent<movement>() != null)
+        //print(gameObject + "HAS CALLED STOP");
+       if((gameObject.GetComponentInChildren<movement>() != null) && !cuffed)
         {
             allowControl = true;
+            
         }
         skipUpdate = false;
+        fighting = false;
+        //if (gameObject.GetComponent<crazyScript>() == null)
+        //{
+           
+            target_loc = start_loc;
+        //}
+        
     }
 
     IEnumerator fightTimer()
     {
-        yield return new WaitForSeconds(20.0f);
+        print(gameObject + "HAS A TIMER SET");
+        yield return new WaitForSeconds(12.0f);
         stopFight();
         yield return null;
         
@@ -153,6 +177,7 @@ public class NPCroutine : MonoBehaviour {
 
     private void FixedUpdate()
     {
+
 
         if (skipUpdate)
         {
@@ -182,10 +207,14 @@ public class NPCroutine : MonoBehaviour {
                 StartCoroutine(controlDelay());
             }
         }
-        else
+        else if(!fighting)
         {
             control = true;
-           
+
+        }
+        else
+        {
+            control = false;
         }
         if (!skipUpdate)
         {
@@ -233,7 +262,7 @@ public class NPCroutine : MonoBehaviour {
         Vector2 curr = new Vector2(transform.position.x, transform.position.z);
         Vector2 tar = new Vector2(l.transform.position.x, l.transform.position.z);
 
-        while (Vector2.SqrMagnitude(tar-curr) > 2)
+        while (Vector2.SqrMagnitude(tar-curr) > 3)
         {
             yield return new WaitForSeconds(0.1f);
             curr = new Vector2(transform.position.x, transform.position.z);
@@ -247,6 +276,7 @@ public class NPCroutine : MonoBehaviour {
         print("cuffing " + gameObject + " to " + npc.gameObject);
         cuffed = true;
         stopFight();
+        _agent.isStopped = false;
         float old_s = _agent.speed;
         _agent.speed = npc.GetComponent<NavMeshAgent>().speed + 2;
         while (cuffed)
@@ -269,5 +299,15 @@ public class NPCroutine : MonoBehaviour {
     public void uncuff()
     {
         cuffed = false;
+    }
+
+    public void changeToGhostMat()
+    {
+        render.material = ghostMaterial;
+    }
+
+    public void changeTostandardMat()
+    {
+        render.material = standardMaterial;
     }
 }

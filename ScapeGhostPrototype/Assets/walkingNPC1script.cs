@@ -9,6 +9,8 @@ public class walkingNPC1script : MonoBehaviour {
     public GameObject l3;
     public GameObject l4;
     private NPCroutine npc;
+    public penTracker pt;
+    public GameObject crazyMans;
 
     public bool stopped = false;
 
@@ -23,44 +25,67 @@ public class walkingNPC1script : MonoBehaviour {
 
     }
 
+    bool move = true;
+
+    public void FixedUpdate()
+    {
+        if (pt.has(crazyMans))
+        {
+            move = true;
+        }
+        else
+        {
+            move = false;
+        }
+
+        if (npc.fighting && !stopped)
+        {
+            print("STOPPING ALL COROUTINES");
+            StopAllCoroutines();
+            //npc.StopCoroutine("goToLocator");
+            StopCoroutine(npc.goToLocator(crazyMans, npc));
+            stopped = true;
+        }else if(stopped && !npc.fighting)
+        {
+            stopped = false;
+            StartCoroutine(fixedRoutine());
+        }
+    }
+
     public void setStopped(bool b)
     {
         stopped = b;
     }
 
+    public void _stop()
+    {
+        StopAllCoroutines();
+    }
+
+    public void _continue()
+    {
+        StartCoroutine(fixedRoutine());
+    }
+
+
     IEnumerator fixedRoutine()
         {
+        yield return StartCoroutine(npc.goToLocator(l4, npc));
         for (; ; )
         {
-            
-            yield return StartCoroutine(npc.goToLocator(l1, npc));
-            //yield return new WaitForSeconds(3.0f);
-            yield return StartCoroutine(npc.goToLocator(l2, npc));
-            yield return new WaitForSeconds(4.0f);
-            yield return StartCoroutine(npc.goToLocator(l3, npc));
-            //yield return new WaitForSeconds(4.0f);
-            yield return StartCoroutine(npc.goToLocator(l4, npc));
-            yield return new WaitForSeconds(6.0f);
-            //if (!stopped)
-            //{
-            //    npc.setTargetLoc(new Vector2(l4.gameObject.transform.position.x, l4.gameObject.transform.position.z));
-            //    yield return new WaitForSeconds(9.0f);
-            //}
-            //if (!stopped)
-            //{
-            //    npc.setTargetLoc(new Vector2(l1.gameObject.transform.position.x, l1.gameObject.transform.position.z));
-            //    yield return new WaitForSeconds(3.0f);
-            //}
-            //if (!stopped)
-            //{
-            //    npc.setTargetLoc(new Vector2(l2.gameObject.transform.position.x, l2.gameObject.transform.position.z));
-            //    yield return new WaitForSeconds(8.0f);
-            //}
-            //if (!stopped)
-            //{
-            //    npc.setTargetLoc(new Vector2(l3.gameObject.transform.position.x, l3.gameObject.transform.position.z));
-            //    yield return new WaitForSeconds(3.5f);
-            //}
+            if (move)
+            {
+                yield return StartCoroutine(npc.goToLocator(l1, npc));
+                yield return StartCoroutine(npc.goToLocator(l2, npc));
+                yield return new WaitForSeconds(4.0f);
+                yield return StartCoroutine(npc.goToLocator(l3, npc));
+                yield return StartCoroutine(npc.goToLocator(l4, npc));
+                yield return new WaitForSeconds(6.0f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1.0f);
+            }
         }
     }
 

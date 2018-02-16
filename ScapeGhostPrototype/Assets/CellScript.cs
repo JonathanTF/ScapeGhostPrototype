@@ -23,6 +23,7 @@ public class CellScript : MonoBehaviour {
         if (other.gameObject.Equals(crazy))
         {
             hasCrazy = true;
+            print("CRAZY ACQUIRED");
         }
     }
 

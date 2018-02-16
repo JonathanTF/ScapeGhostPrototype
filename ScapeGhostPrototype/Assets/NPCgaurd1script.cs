@@ -12,13 +12,19 @@ public class NPCgaurd1script : MonoBehaviour {
     public GameObject l5;
     public GameObject l6;
     public GameObject l7;
+    public GameObject breakoutTarget;
     public GameObject mat1;
     private NPCroutine npc;
     public GameObject crazyPrisoner;
     public GameObject gaurd2;
+    public GameObject gaurd3;
     public doorScript bottomDoor;
     public doorScript topDoor;
     public doorScript cellDoor;
+    public GameObject innerCellLocator1;
+    public GameObject innerCellLocator2;
+
+
     bool stdWalk = true;
     private bool atL1 = false;
     bool hitCrazy = false;
@@ -27,7 +33,10 @@ public class NPCgaurd1script : MonoBehaviour {
     void Start () {
         npc = GetComponent<NPCroutine>();
         StartCoroutine(fixedRoutine());
+        cellDoor.disableInteract = true;
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -63,28 +72,29 @@ public class NPCgaurd1script : MonoBehaviour {
         npc._agent.speed = 10;
         NPCroutine myRoutine = gameObject.GetComponent<NPCroutine>();
 
+        bottomDoor.disableInteract = true;
+
         yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
-        yield return new WaitForSeconds(3.0f);
+        while (!mat1.GetComponent<keyMatScript>().holdsKey())
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        
 
         npc.matInteract(mat1);
 
-        //yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
-
-        //npc.setTargetLoc(new Vector2(crazyPrisoner.gameObject.transform.position.x, crazyPrisoner.gameObject.transform.position.z));
-        //while (!hitCrazy)
-        //{
-
-        //    yield return new WaitForSeconds(0.1f);
-        //    npc.setTargetLoc(new Vector2(crazyPrisoner.gameObject.transform.position.x, crazyPrisoner.gameObject.transform.position.z));
-        //}
         yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
+        bottomDoor.disableInteract = false;
         bottomDoor.interact(npc);
+        bottomDoor.disableInteract = true;
         yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        bottomDoor.disableInteract = false;
         bottomDoor.interact(npc);
+        bottomDoor.disableInteract = true;
         yield return StartCoroutine(myRoutine.goToLocator(crazyPrisoner, npc));
 
         hitCrazy = false;
-        //crazyPrisoner.transform.parent = gameObject.transform;
+
         StartCoroutine(crazyPrisoner.GetComponent<NPCroutine>().handcuffTo(npc.gameObject));
         print("PARENTED!");
         crazyPrisoner.GetComponent<crazyScript>().spreadFear();
@@ -92,26 +102,33 @@ public class NPCgaurd1script : MonoBehaviour {
 
         print("RETURNING...");
         yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        bottomDoor.disableInteract = false;
         bottomDoor.interact(npc);
+        bottomDoor.disableInteract = true;
         yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
+        bottomDoor.disableInteract = false;
         bottomDoor.interact(npc);
-        // yield return StartCoroutine(myRoutine.goToLocator(l4, npc));
+        bottomDoor.disableInteract = true;
 
-        // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
-
-        // yield return StartCoroutine(myRoutine.goToLocator(l6, npc));
-
-        // yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
+        cellDoor.disableInteract = true;
         yield return StartCoroutine(myRoutine.goToLocator(l7, npc));
+        cellDoor.disableInteract = false;
         cellDoor.interact(npc);
+        cellDoor.disableInteract =  true;
 
         yield return StartCoroutine(myRoutine.goToLocator(l3, npc));
 
-        crazyPrisoner.GetComponent<NPCroutine>().setTargetLoc(new Vector2(crazyPrisoner.transform.position.x, crazyPrisoner.transform.position.z));
+        crazyPrisoner.GetComponent<NPCroutine>().start_loc = (crazyPrisoner.transform.position);
+        crazyPrisoner.GetComponent<NPCroutine>().setTargetLoc(crazyPrisoner.transform.position);
+
         crazyPrisoner.GetComponent<NPCroutine>().uncuff();
-        //yield return new WaitForSeconds(0.5f);
+
         yield return StartCoroutine(myRoutine.goToLocator(l7, npc));
+        cellDoor.disableInteract = false;
         cellDoor.interact(npc);
+        cellDoor.disableInteract = true;
+
+        bottomDoor.disableInteract = false;
 
         yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
 
@@ -128,6 +145,70 @@ public class NPCgaurd1script : MonoBehaviour {
         yield return null;
     }
 
+    public bool haveTarget = false;
+    public bool readyRelease = false;
+
+    public IEnumerator breakout()
+    {
+        print("starting breakout!");
+        haveTarget = false;
+        stdWalk = false;
+        npc._agent.speed = 10;
+        NPCroutine myRoutine = gameObject.GetComponent<NPCroutine>();
+        yield return StartCoroutine(myRoutine.goToLocator(breakoutTarget, npc));
+        StartCoroutine(breakoutTarget.GetComponent<NPCroutine>().handcuffTo(npc.gameObject));
+        yield return StartCoroutine(myRoutine.goToLocator(breakoutTarget, npc));
+        haveTarget = true;
+        while (!gaurd2.GetComponent<NPCgaurd2script>().haveTarget)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        while (!gaurd3.GetComponent<NPCgaurd3script>().haveTarget)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        print("we got em!");
+
+        //if (myRoutine.ownKey)
+        //{
+        //    //i have the key
+        //    yield return StartCoroutine(myRoutine.goToLocator(innerCellLocator1, npc));
+        //    if (topDoor.locked)
+        //    {
+        //        topDoor.interact(npc);
+        //    }
+        //    yield return StartCoroutine(myRoutine.goToLocator(innerCellLocator2, npc));
+        //    readyRelease = true;
+        //}
+        //else
+        //{
+            yield return new WaitForSeconds(1.0f);//wait for another gaurd to deal with key
+            yield return StartCoroutine(myRoutine.goToLocator(innerCellLocator2, npc));
+            readyRelease = true;
+        //}
+        while (!gaurd2.GetComponent<NPCgaurd2script>().readyRelease)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        while (!gaurd3.GetComponent<NPCgaurd3script>().readyRelease)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        print("we placed em!");
+
+        breakoutTarget.GetComponent<NPCroutine>().uncuff();
+
+        npc._agent.speed = 5;
+        stdWalk = true;
+        yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(l1, npc));
+        topDoor.disableInteract = false;
+        topDoor.interact(npc);
+        haveTarget = false;
+        readyRelease = false;
+        StartCoroutine(fixedRoutine());
+    }
+
     IEnumerator fixedRoutine()
     {
         for (; ; )
@@ -135,9 +216,15 @@ public class NPCgaurd1script : MonoBehaviour {
             if (stdWalk)
             {
                 yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(l1, npc));
-                yield return new WaitForSeconds(16.0f);
+                if(!bottomDoor.locked && npc.ownKey)
+                {
+                    yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(l6, npc));
+                    bottomDoor.interact(npc);
+                    yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(l1, npc));
+                }
+                yield return new WaitForSeconds(4.0f);
                 yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(l2, npc));
-                yield return new WaitForSeconds(3.0f);
+                yield return new WaitForSeconds(4.0f);
             }
             else
             {

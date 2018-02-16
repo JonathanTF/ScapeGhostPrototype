@@ -9,6 +9,8 @@ public class crazyScript : MonoBehaviour {
     public GameObject prisoner4;
     public GameObject prisoner5;
     public GameObject prisoner6;
+    public GameObject cellLocator;
+
 
     public NPCgaurd1script gaurd1;
     public NPCgaurd2script gaurd2;
@@ -46,30 +48,43 @@ public class crazyScript : MonoBehaviour {
     {
         bool b = false;
         fighting = true;
+        //otherNPC.GetComponent<NPCroutine>().StartCoroutine(otherNPC.GetComponent<NPCroutine>().goToLocator(gameObject, otherNPC.GetComponent<NPCroutine>()));
+        //yeildgameObject.GetComponent<NPCroutine>()
+        //StartCoroutine(otherNPC.GetComponent<NPCroutine>().goToLocator(gameObject, otherNPC.GetComponent<NPCroutine>()));
+        yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(otherNPC, gameObject.GetComponent<NPCroutine>()));
+        yield return otherNPC.GetComponent<NPCroutine>().StartCoroutine(otherNPC.GetComponent<NPCroutine>().goToLocator(gameObject, otherNPC.GetComponent<NPCroutine>()));
+
         for (int i = 0; i < 12; i++)
         {
-            
+            gameObject.GetComponent<NPCroutine>().target_loc = otherNPC.transform.position;
+            yield return StartCoroutine(gameObject.GetComponent<NPCroutine>().goToLocator(otherNPC, gameObject.GetComponent<NPCroutine>()));
+
             if (gaurd1.getAtL1() && stage1)
             {
-                
                 gaurd2.stage1();
                 gaurd1.dealWithCrazy();
                 //yield return StartCoroutine(gaurd1.getKeyRoutine());
-                
+
                 print("stage 1 started");
                 b = true;
-                
+
+            }
+
+            if (gameObject.GetComponent<NPCroutine>().cuffed)
+            {
                 break;
             }
             yield return new WaitForSeconds(1.0f);
+            print(i+"th iteration");
         }
         fighting = false;
-        if(b == false)
-        {
-            gameObject.GetComponent<NPCroutine>().stopFight();
+        //if(b == false)
+        //{
             otherNPC.GetComponent<NPCroutine>().stopFight();
+            gameObject.GetComponent<NPCroutine>().stopFight();
+            
             print("stopping the fight");
-        }
+        //}
 
         yield return new WaitForSeconds(20.0f);
         print("returning from crazyTime");
