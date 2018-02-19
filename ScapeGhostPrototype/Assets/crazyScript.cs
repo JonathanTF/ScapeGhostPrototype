@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class crazyScript : MonoBehaviour {
     public GameObject prisoner1;
@@ -10,7 +11,7 @@ public class crazyScript : MonoBehaviour {
     public GameObject prisoner5;
     public GameObject prisoner6;
     public GameObject cellLocator;
-
+    public Text crazyText;
 
     public NPCgaurd1script gaurd1;
     public NPCgaurd2script gaurd2;
@@ -19,13 +20,25 @@ public class crazyScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        crazyText.enabled = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
 	}
+
+    private void FixedUpdate()
+    {
+        if (GetComponentInChildren<movement>())
+        {
+            crazyText.enabled = true;
+        }
+        else
+        {
+            crazyText.enabled = false;
+        }
+    }
 
     public void goCrazy(GameObject otherNPC)
     {

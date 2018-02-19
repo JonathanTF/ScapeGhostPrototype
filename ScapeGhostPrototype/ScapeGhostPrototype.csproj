@@ -297,6 +297,7 @@
     <Compile Include="Assets\NPCgaurd3script.cs" />
     <Compile Include="Assets\NPCroutine.cs" />
     <Compile Include="Assets\penTracker.cs" />
+    <Compile Include="Assets\ResistGUI.cs" />
     <Compile Include="Assets\walkingNPC1script.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

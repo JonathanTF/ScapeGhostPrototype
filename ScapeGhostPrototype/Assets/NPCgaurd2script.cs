@@ -128,7 +128,13 @@ public class NPCgaurd2script : MonoBehaviour {
         _agent.speed = 10;
         yield return StartCoroutine(npc.goToLocator(l2.gameObject, npc));
         yield return StartCoroutine(npc.goToLocator(l3.gameObject, npc));
-        npc.matInteract(mat1);
+
+        while (!npc.ownKey)
+        {
+            npc.matInteract(mat1);
+            yield return new WaitForSeconds(0.2f);
+        }
+        
         yield return StartCoroutine(npc.goToLocator(l2.gameObject, npc));
         yield return StartCoroutine(npc.goToLocator(l1.gameObject, npc));
         npc.matInteract(mat2);

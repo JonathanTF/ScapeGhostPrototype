@@ -12,6 +12,7 @@ public class NPCgaurd1script : MonoBehaviour {
     public GameObject l5;
     public GameObject l6;
     public GameObject l7;
+    public GameObject l8;
     public GameObject breakoutTarget;
     public GameObject mat1;
     private NPCroutine npc;
@@ -32,8 +33,9 @@ public class NPCgaurd1script : MonoBehaviour {
     // Use this for initialization
     void Start () {
         npc = GetComponent<NPCroutine>();
-        StartCoroutine(fixedRoutine());
+        //StartCoroutine(fixedRoutine());
         cellDoor.disableInteract = true;
+        StartCoroutine(starterRoutine());
     }
 
 
@@ -41,7 +43,7 @@ public class NPCgaurd1script : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.SqrMagnitude(npc.transform.position - l1.transform.position) < 0.5f)
+        if (Vector3.SqrMagnitude(npc.transform.position - l8.transform.position) < 0.5f)
         {
             atL1 = true;
         }
@@ -68,7 +70,7 @@ public class NPCgaurd1script : MonoBehaviour {
        
 
         stdWalk = false;
-        npc.Vspeed = 10;
+        npc.Vspeed = 5;
         npc._agent.speed = 10;
         NPCroutine myRoutine = gameObject.GetComponent<NPCroutine>();
 
@@ -95,9 +97,11 @@ public class NPCgaurd1script : MonoBehaviour {
 
         hitCrazy = false;
 
+
         StartCoroutine(crazyPrisoner.GetComponent<NPCroutine>().handcuffTo(npc.gameObject));
         print("PARENTED!");
         crazyPrisoner.GetComponent<crazyScript>().spreadFear();
+        npc._agent.speed = 10;
         yield return new WaitForSeconds(1.0f);
 
         print("RETURNING...");
@@ -132,7 +136,7 @@ public class NPCgaurd1script : MonoBehaviour {
 
         yield return StartCoroutine(myRoutine.goToLocator(l2, npc));
 
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(1.0f);
         npc.matInteract(mat1);
         gaurd2.GetComponent<NPCgaurd2script>().stage1End = true;
         crazyPrisoner.GetComponent<crazyScript>().stage1 = false;
@@ -151,6 +155,17 @@ public class NPCgaurd1script : MonoBehaviour {
     public IEnumerator breakout()
     {
         print("starting breakout!");
+        while(crazyPrisoner.GetComponent<crazyScript>().stage1 == true)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        if (!npc.ownKey)
+        {
+            yield return StartCoroutine(npc.goToLocator(l2.gameObject, npc));
+            npc.matInteract(mat1);
+        }
+
         haveTarget = false;
         stdWalk = false;
         npc._agent.speed = 10;
@@ -207,6 +222,13 @@ public class NPCgaurd1script : MonoBehaviour {
         haveTarget = false;
         readyRelease = false;
         StartCoroutine(fixedRoutine());
+        
+    }
+
+    IEnumerator starterRoutine()
+    {
+        yield return npc.goToLocator(l8.gameObject, npc);
+        yield return null;
     }
 
     IEnumerator fixedRoutine()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NPCgaurd3script : MonoBehaviour {
 
@@ -23,6 +24,7 @@ public class NPCgaurd3script : MonoBehaviour {
     public Vector3 start_loc;
     public GameObject starter;
     public doorScriptGaurd3 myDoor;
+    public Image silverKey;
 
     // Use this for initialization
     void Start () {
@@ -33,8 +35,20 @@ public class NPCgaurd3script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
+
+    private void FixedUpdate()
+    {
+        if (GetComponentInChildren<movement>() != null)
+        {
+            silverKey.enabled = true;
+        }
+        else
+        {
+            silverKey.enabled = false;
+        }
+    }
 
     public bool haveTarget = false;
     public bool readyRelease = false;

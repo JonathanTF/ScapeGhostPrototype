@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class NPCroutine : MonoBehaviour {
 
     public float minResistance = 0;
-
+    public Image goldKey;
     public bool ownKey = false;
     public GameObject key = null;
     public NavMeshAgent _agent;
@@ -24,6 +25,9 @@ public class NPCroutine : MonoBehaviour {
     private MeshRenderer render;
     public bool fighting = false;
 
+    public Text theBOX;
+    public Text myText;
+
     // Use this for initialization
     void Start () {
         render = GetComponent<MeshRenderer>();
@@ -37,6 +41,8 @@ public class NPCroutine : MonoBehaviour {
         _agent.angularSpeed = 0;
         _agent.speed = 5;
         _agent.acceleration = 50.0f;
+
+        
     }
 	
 	// Update is called once per frame
@@ -49,7 +55,10 @@ public class NPCroutine : MonoBehaviour {
         StopAllCoroutines();
     }
 
-
+    public void writeBox()
+    {
+        theBOX.text = myText.text;
+    }
 
     public Vector2 getTarget()
     {
@@ -177,6 +186,7 @@ public class NPCroutine : MonoBehaviour {
 
     private void FixedUpdate()
     {
+
 
 
         if (skipUpdate)

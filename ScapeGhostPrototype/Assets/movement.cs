@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class movement : MonoBehaviour {
 
+    public GameObject firstGuy;
     private CharacterController move;
     private NPCroutine npc;
     public NPCroutine lastNpc;
@@ -12,13 +14,21 @@ public class movement : MonoBehaviour {
     public float Rspeed = 1;
     private bool ejected = true;
     public float radius;
+    public Text theBOX;
+    public Image goldKey;
 
     // Use this for initialization
     void Start() {
         move = gameObject.GetComponent<CharacterController>();
-
-
         start_loc = new Vector2(transform.position.x, transform.position.z);
+        gameObject.transform.position = firstGuy.transform.position;
+        gameObject.transform.parent = firstGuy.transform;
+        move = GetComponentInParent<CharacterController>();
+        npc = GetComponentInParent<NPCroutine>();
+        npc.writeBox();
+        npc.setAllowControl(true);
+        npc.changeToGhostMat();
+        ejected = false;
 
     }
 
@@ -29,10 +39,27 @@ public class movement : MonoBehaviour {
 
     void Update() {
 
+        if (!ejected)
+        {
+            if (GetComponentInParent<NPCroutine>().ownKey)
+            {
+                goldKey.enabled = true;
+            }
+            else
+            {
+                goldKey.enabled = false;
+            }
+        }
+
+        if (ejected)
+        {
+            theBOX.text = " ";
+        }
 
         if (Input.GetKeyUp("space"))
         {
             spaceUp = true;
+            
         }
         if (Input.GetKeyDown("space"))
         {
@@ -112,7 +139,7 @@ public class movement : MonoBehaviour {
 
 
         //Disperse
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.L))
         {
             if (!ejected)
             {
@@ -132,13 +159,14 @@ public class movement : MonoBehaviour {
                 move = GetComponentInParent<CharacterController>();
                 npc = GetComponentInParent<NPCroutine>();
                 npc.setAllowControl(true);
+                npc.writeBox();
                 ejected = false;
             }
 
             
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && npc!=null)
+        if (Input.GetKeyDown(KeyCode.K) && npc!=null)
         {
             crazyScript crazy = npc.GetComponent<crazyScript>();
             if(crazy != null)
@@ -180,7 +208,7 @@ public class movement : MonoBehaviour {
             
         }
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             if (ejected)
             {
@@ -288,6 +316,7 @@ public class movement : MonoBehaviour {
         gameObject.transform.parent = NPClist[current].transform;
         move = GetComponentInParent<CharacterController>();
         npc = GetComponentInParent<NPCroutine>();
+        npc.writeBox();
         if (!npc.fighting && !npc.cuffed)
         {
             npc.setAllowControl(true);

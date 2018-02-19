@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class doorScript : MonoBehaviour {
 
+    public GameObject lockSignal;
     public GameObject holder;
     public GameObject gate;
     private Collider detector;
     public bool locked = true;
     public bool disableInteract = false;
+    public Material lockedMat;
+    public Material unlockedMat;
+    
 
 	// Use this for initialization
 	void Start () {
@@ -36,12 +40,14 @@ public class doorScript : MonoBehaviour {
             {
                 detector.enabled = true;
                 locked = false;
+                lockSignal.GetComponent<MeshRenderer>().material = unlockedMat;
             }
             else
             {
                 gate.transform.position = gameObject.transform.position;
                 detector.enabled = false;
                 locked = true;
+                lockSignal.GetComponent<MeshRenderer>().material = lockedMat;
             }
             return true;
         }
