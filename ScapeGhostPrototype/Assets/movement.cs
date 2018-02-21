@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class movement : MonoBehaviour {
 
+    public float ghost_radius = 4;
+    public float build_up_resistance = 0.2f;
+    public float speed = 5;
     public GameObject firstGuy;
     private CharacterController move;
     private NPCroutine npc;
@@ -13,9 +16,11 @@ public class movement : MonoBehaviour {
     public float Vspeed = 1;
     public float Rspeed = 1;
     private bool ejected = true;
-    public float radius;
+    //public float radius;
     public Text theBOX;
     public Image goldKey;
+    public GameObject theGreenSphere;
+    
 
     // Use this for initialization
     void Start() {
@@ -28,8 +33,11 @@ public class movement : MonoBehaviour {
         npc.writeBox();
         npc.setAllowControl(true);
         npc.changeToGhostMat();
+        npc.resistance_build_up = build_up_resistance;
+        npc.Vspeed = speed;
         ejected = false;
-
+        gameObject.GetComponent<SphereCollider>().radius = ghost_radius;
+        theGreenSphere.transform.localScale = new Vector3(ghost_radius * 2, ghost_radius * 2, ghost_radius * 2);
     }
 
     // Update is called once per frame
@@ -71,7 +79,7 @@ public class movement : MonoBehaviour {
 
                 spaceBreak = true;
                 
-                Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, radius);
+                Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, ghost_radius);
                 // print("Touching objects: ");
 
                 GameObject me = null;
@@ -171,7 +179,7 @@ public class movement : MonoBehaviour {
             crazyScript crazy = npc.GetComponent<crazyScript>();
             if(crazy != null)
             {
-                Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, radius);
+                Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, ghost_radius);
                 // print("Touching objects: ");
                 float min_dist = float.MaxValue;
                 GameObject min_NPC = null;
@@ -218,7 +226,7 @@ public class movement : MonoBehaviour {
             {
                 return;
             }
-            Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, radius);
+            Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, ghost_radius);
             // print("Touching objects: ");
             float min_dist = float.MaxValue;
             GameObject min_mat = null;
@@ -317,6 +325,8 @@ public class movement : MonoBehaviour {
         move = GetComponentInParent<CharacterController>();
         npc = GetComponentInParent<NPCroutine>();
         npc.writeBox();
+        npc.resistance_build_up = build_up_resistance;
+        npc.Vspeed = speed;
         if (!npc.fighting && !npc.cuffed)
         {
             npc.setAllowControl(true);

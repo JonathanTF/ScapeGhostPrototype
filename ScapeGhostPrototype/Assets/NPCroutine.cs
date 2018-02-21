@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class NPCroutine : MonoBehaviour {
-
+    public float resistance_build_up = 0.2f;
     public float minResistance = 0;
     public Image goldKey;
     public bool ownKey = false;
@@ -24,6 +24,7 @@ public class NPCroutine : MonoBehaviour {
     public Material ghostMaterial;
     private MeshRenderer render;
     public bool fighting = false;
+
 
     public Text theBOX;
     public Text myText;
@@ -104,11 +105,11 @@ public class NPCroutine : MonoBehaviour {
         {
             if (control)
             {
-                resistance += .2f;
+                resistance += resistance_build_up;
             }
             else
             {
-                resistance -= .2f;
+                resistance -= resistance_build_up;
             }
 
             if (resistance < minResistance) resistance = minResistance;
