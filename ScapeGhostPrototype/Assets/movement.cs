@@ -20,7 +20,7 @@ public class movement : MonoBehaviour {
     public Text theBOX;
     public Image goldKey;
     public GameObject theGreenSphere;
-    
+    public Image interact_sprite;
 
     // Use this for initialization
     void Start() {
@@ -44,6 +44,30 @@ public class movement : MonoBehaviour {
     bool spaceBreak = false;
     bool spaceUp = true;
     bool nDown = false;
+
+    private void FixedUpdate()
+    {
+        Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, ghost_radius);
+        // print("Touching objects: ");
+        bool hit = false;
+
+        foreach (Collider c in hitObjects)
+        {
+            //print(c.gameObject);
+
+            if (c.gameObject.tag.Equals("mat") || c.gameObject.tag.Equals("gate"))
+            {
+                print("hit!");
+                hit = true;
+               // interact_sprite.
+            }
+           
+        }
+
+
+        interact_sprite.enabled = hit;
+        
+    }
 
     void Update() {
 
