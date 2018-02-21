@@ -45,8 +45,11 @@ public class movement : MonoBehaviour {
     bool spaceUp = true;
     bool nDown = false;
 
+    GameObject[] NewNPClist;
+
     private void FixedUpdate()
     {
+        //List<GameObject> NewList = new List<GameObject>();
         Collider[] hitObjects = Physics.OverlapSphere(gameObject.transform.position, ghost_radius);
         // print("Touching objects: ");
         bool hit = false;
@@ -60,11 +63,14 @@ public class movement : MonoBehaviour {
                 print("hit!");
                 hit = true;
                // interact_sprite.
+            }else if (c.gameObject.tag.Equals("npc"))
+            {
+               // NewList.Add(c.gameObject);
             }
            
         }
 
-
+        //NewNPClist = NewList.ToArray();
         interact_sprite.enabled = hit;
         
     }
@@ -319,6 +325,7 @@ public class movement : MonoBehaviour {
 
         }
         float timer = Time.time;
+
         while (!spaceUp && ((Time.time - timer) < 0.3f))
         {
 
